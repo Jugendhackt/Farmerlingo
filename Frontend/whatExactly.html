@@ -29,29 +29,36 @@
       padding: 10px;
     }
 
+    .modalIcon{
+      height: 50%;
+      width: 50%;
+      margin-left: 25%;
+      margin-right: 25%;
+    }
+
 
 </style>
 </head>
 <body>
 </p>
-<h1>WHAT EXACTLY ?</h1>
+<h1>WHAT EXACTLY?</h1>
 </p>
 
 <!--TILES-->
 <div class="row">
   <div class="col">
-    <a id="myBtn1">
-      <img class="foodIcon" src="img/banana.jpg" alt="Banana">
+    <a id="riceBtn">
+      <img class="foodIcon" src="img/rice.png" alt="Rice">
     </a>
   </div>
   <div class ="col">
-    <a id="myBtn2">
-      <img class="foodIcon" src="img/banana.jpg" alt="Banana">
+    <a id="bananaBtn">
+      <img class="foodIcon" src="img/Bananas.png" alt="Banana">
     </a>
   </div>
   <div class="col">
-    <a id="myBtn3">
-      <img class="foodIcon" src="img/banana.jpg" alt="Banana">
+    <a id="appleBtn">
+      <img class="foodIcon" src="img/Apple.png" alt="Banana">
     </a>
   </div>
     <!-- The Modal -->
@@ -60,7 +67,11 @@
       <!-- Modal content -->
       <div class="modal-content">
         <span class="close">&times;</span>
-        <p></p>
+        <div id="modalIcon"></div>
+        How much (in kilos)?
+        <input type="number" value="0" class="amountInput" id="amountInput">
+        <div id="priceDisplay"></div>
+        <div class="sellBtn"><button type="button" class="btn btn-success" id="sellBtn">Put up for sale</button></div>
       </div>
 
     </div>
@@ -78,6 +89,7 @@
         overflow: auto; /* Enable scroll if needed */
         background-color: rgb(0,0,0); /* Fallback color */
         background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        text-align:center;
         }
 
         /* Modal Content/Box */
@@ -103,6 +115,25 @@
         text-decoration: none;
         cursor: pointer;
       }
+
+      .amountInput {
+        width:20%;
+        text-align: center;
+        margin-left: 40%;
+        margin-right: 40%;
+      }
+
+      .close {
+        text-align:right;
+      }
+
+      .sellBtn {
+        width: 20%;
+        margin-left: 40%;
+        margin-right: 40%;
+        margin-top: 2.5%;
+      }
+
     </style>
 
     <script>
@@ -110,14 +141,51 @@
     var modal = document.getElementById('myModal');
 
     // Get the button that opens the modal
-    var btn = document.getElementById("myBtn1");
+    var riceBtn = document.getElementById("riceBtn");
+    var appleBtn = document.getElementById("appleBtn");
+    var bananaBtn = document.getElementById("bananaBtn");
+    var amountInput = document.getElementById("amountInput");
+    var sellBtn = document.getElementById("sellBtn");
+
+    var dict = {banana : 50, apple : 100, rice : 40}
+
+    var foodType = "null";
 
     // Get the <span> element that closes the modal
     var span = document.getElementsByClassName("close")[0];
 
-    // When the user clicks on the button, open the modal
-    btn.onclick = function() {
+
+    riceBtn.onclick = function() {
     modal.style.display = "block";
+    document.getElementById("modalIcon").innerHTML = '<img class="modalIcon" src="img/rice.png" alt="Rice">';
+    foodType = "rice";
+    }
+    bananaBtn.onclick = function() {
+    modal.style.display = "block";
+    document.getElementById("modalIcon").innerHTML = '<img class="modalIcon" src="img/Bananas.png" alt="Rice">';
+    foodType = "banana";
+    }
+    appleBtn.onclick = function() {
+    modal.style.display = "block";
+    document.getElementById("modalIcon").innerHTML = '<img class="modalIcon" src="img/Apple.png" alt="Rice">';
+    foodType = "apple";
+    }
+
+    amountInput.onchange = function() {
+      var price = 0;
+      var amount = amountInput.value;
+      price = dict[foodType] * amount;
+      document.getElementById("priceDisplay").innerHTML = '</p>' + price + " Rs.";
+    }
+
+    sellBtn.onclick = function() {
+      var amount = amountInput.value;
+      var price = dict[foodType] * amount;
+      var xhttp = new XMLHttpRequest();
+      xhttp.open("GET", ('http://127.0.0.1:5000/food/add' + '?amount=' + amount + '&price=' + price  + '&type=' + foodType), true);
+      xhttp.send();
+      console.log('actually this should have gone to the database' + 'http://127.0.0.1:5000/food/add' + '?amount=' + amount + '&price=' + price  + '&type=' + foodType )
+      // document.location.href = 'http://127.0.0.1:5000/food/add' + '?amount=' + amount + '&price=' + price  + '&type=' + foodType;
     }
 
     // When the user clicks on <span> (x), close the modal
@@ -125,12 +193,13 @@
     modal.style.display = "none";
     }
 
+
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-    }
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+        }
     </script>
 </body>
 

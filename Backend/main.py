@@ -4,14 +4,17 @@
 
 # Import the modules
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 # create the app. This variable named jh constains our app
 jh = Flask(__name__)
 
+CORS(jh)
+
 
 producerDict = dict(name='producer', producers=[])
 foodDict = dict(name = 'availableFood', foods=[])
-foodPriceDict = dict(banana = 50, apple = 100, rice = 40)
+# foodPriceDict = dict(banana = 50, apple = 100, rice = 40)
 
 producerIdCounter = 0
 
@@ -41,9 +44,9 @@ def add_producer():
     return 'Added producer {}'.format(name)
 
 
-@jh.route('/foodPriceDict')
-def foodPriceDict():
-    return jsonify(foodPriceDict)
+# @jh.route('/foodPriceDict')
+# def foodPriceDict():
+#     return jsonify(foodPriceDict)
 
 
 @jh.route('/food')
@@ -54,21 +57,24 @@ def food():
 def add_food():
     args = request.args.to_dict()
     type = args['type']
-    found = False
-    for i in foodPriceDict:
-        if i == type:
-            found = True
-    if not found:
-        return jsonify(dict(error = True, message = "We don't have this product yet :("))
+    # found = False
+    # for i in foodPriceDict:
+    #     if i == type:
+    #         found = True
+    # if not found:
+    #     return jsonify(dict(error = True, message = "We don't have this product yet :("))
     amount = args['amount']
-    price = int(foodPriceDict[type]) * int(amount)
-    producer = args['producer']
-    for i in producerDict['producers']:
-        if i['name'] == producer:
-            newProduct = dict(type=type, amount = amount, price = price, producer = i)
-            foodDict['foods'].append(newProduct)
-            return 'Added food {}'.format(type)
-    return jsonify(dict(error=True, message= "no producer with this name found"))
+    price = args['price']
+    # producer = args['producer']
+    # for i in producerDict['producers']:
+    #     if i['name'] == producer:
+    #         newProduct = dict(type=type, amount = amount, price = price, producer = i)
+    #         foodDict['foods'].append(newProduct)
+    #         return 'Added food {}'.format(type)
+    # return jsonify(dict(error=True, message= "no producer with this name found"))
+    newProduct = dict(type=type, amount = amount, price = price)
+    foodDict['foods'].append(newProduct)
+    return 'Added food {}'.format(type)
 
 # This comment a comment
 # Run the app if someone runs this file.
